@@ -1,59 +1,145 @@
 # Fitness Center Management API
 
-This Flask application provides a RESTful API for managing a fitness center's database, including member management and workout session tracking.
+A Flask-based RESTful API for managing a fitness center's member database and workout sessions.
 
-## Setup Instructions
+## Features
 
-1. Create a virtual environment:
+- Member Management (CRUD operations)
+- Workout Session Scheduling
+- Member Workout History
+
+## Prerequisites
+
+- Python 3.x
+- MySQL Server
+- Virtual Environment (recommended)
+
+## Installation
+
+1. Clone the repository:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+git clone <repository-url>
+cd fitness-center-api
 ```
 
-2. Install dependencies:
+2. Create and activate a virtual environment:
 ```bash
-pip install -r requirements.txt
+python -m venv myenv
+source myenv/bin/activate  # On Windows use: myenv\Scripts\activate
 ```
 
-3. Configure the database:
-- Create a MySQL database named `fitness_center`
-- Update the `.env` file with your database credentials
+3. Install required packages:
+```bash
+pip install flask mysql-connector-python
+```
 
-4. Run the application:
+4. Set up the database:
+```bash
+mysql -u root -p < create_tables.sql
+```
+
+## Configuration
+
+Update the database configuration in `app.py`:
+```python
+app.config['DB_HOST'] = 'localhost'
+app.config['DB_USER'] = 'root'
+app.config['DB_PASSWORD'] = 'your_password'
+app.config['DB_NAME'] = 'fitness_center'
+```
+
+## Running the Application
+
 ```bash
 python app.py
 ```
-
-## API Endpoints
+The server will start on `http://localhost:5001`
 
 ### Members
 
-- **POST /members** - Add a new member
-  ```json
-  {
+1. Create a new member
+```bash
+POST /members
+{
     "name": "John Doe",
     "email": "john@example.com",
-    "membership_type": "premium"
-  }
-  ```
+    "age": 30
+}
+```
 
-- **GET /members** - Get all members
-- **GET /members/{id}** - Get a specific member
-- **PUT /members/{id}** - Update a member
-- **DELETE /members/{id}** - Delete a member
+2. Get member details
+```bash
+GET /members/<id>
+```
+
+3. Update member
+```bash
+PUT /members/<id>
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "age": 31
+}
+```
+
+4. Delete member
+```bash
+DELETE /members/<id>
+```
 
 ### Workout Sessions
 
-- **POST /workout-sessions** - Schedule a new workout session
-  ```json
-  {
+1. Schedule a workout
+```bash
+POST /workouts
+{
     "member_id": 1,
-    "date": "2023-09-20 14:30:00",
-    "workout_type": "cardio",
-    "duration": 60
-  }
-  ```
+    "date": "2024-03-19 14:30:00",
+    "duration": 60,
+    "activity": "cardio"
+}
+```
 
-- **GET /members/{member_id}/workout-sessions** - Get all workout sessions for a member
-- **PUT /workout-sessions/{id}** - Update a workout session
-- **DELETE /workout-sessions/{id}** - Delete a workout session
+2. Update workout session
+```bash
+PUT /workouts/<id>
+{
+    "date": "2024-03-19 15:30:00",
+    "duration": 45,
+    "activity": "strength training"
+}
+```
+
+3. Get all workouts
+```bash
+GET /workouts
+```
+
+4. Get member's workouts
+```bash
+GET /members/<id>/workouts
+```
+
+## Database Schema
+
+### Members Table
+- id (INT, Primary Key)
+- name (VARCHAR)
+- email (VARCHAR)
+- age (INT)
+- join_date (TIMESTAMP)
+
+### WorkoutSessions Table
+- id (INT, Primary Key)
+- member_id (INT, Foreign Key)
+- date (DATETIME)
+- duration (INT)
+- activity (VARCHAR)
+
+## Error Handling
+
+The API includes error handling for:
+- Invalid requests
+- Database connection issues
+- Resource not found
+- Duplicate entries
