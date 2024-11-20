@@ -1,6 +1,2 @@
 flask==2.3.3
-flask-marshmallow==0.15.0
-flask-sqlalchemy==3.0.5
-marshmallow-sqlalchemy==0.29.0
 mysql-connector-python==8.1.0
-python-dotenv==1.0.0
